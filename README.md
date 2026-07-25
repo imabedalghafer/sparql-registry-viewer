@@ -64,7 +64,7 @@ services:
     "lang": "ar,en",                            // label language preference, best first
     "defaultGraphs": ["https://example.org/g"], // sent as default-graph-uri on every query
     "prefixes": { "ex": "https://example.org/ns#" },       // IRI shortening in the UI
-    "classStyles": { "LegalResource": "#1baf7a" },         // type-IRI substring → node colour (longest match wins)
+    "classStyles": { "ClassType": "#1baf7a" },         // type-IRI substring → node colour (longest match wins)
     "layerProperty": "https://example.org/ns#rank",        // numeric property → layered layout
     "defaultQuery": "SELECT …",                            // loaded when the connection is selected
     "samples": [{ "name": "…", "q": "…" }]
