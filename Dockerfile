@@ -1,6 +1,6 @@
 FROM python:3.12-alpine
 
-LABEL org.opencontainers.image.title="SPARQL Scope" \
+LABEL org.opencontainers.image.title="SPARQL Registry Viewer" \
       org.opencontainers.image.description="Read-only graph explorer for any SPARQL 1.1 endpoint" \
       org.opencontainers.image.licenses="Apache-2.0" \
       org.opencontainers.image.version="0.1.0" \

@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for taking a look. SPARQL Scope is deliberately small: a Python
+Thanks for taking a look. SPARQL Registry Viewer is deliberately small: a Python
 standard-library server and vanilla JavaScript, with no build step.
 
 ## Run it

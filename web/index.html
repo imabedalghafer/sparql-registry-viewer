@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SPARQL Scope</title>
+<title>SPARQL Registry Viewer</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
 <!-- Restore the chosen theme before first paint so there is no flash. -->
 <script>try{var t=localStorage.getItem("scopeTheme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
@@ -12,7 +12,7 @@
 </head>
 <body>
 <header>
-  <div class="brand">🔭 <b>SPARQL Scope</b><span class="ver">read-only graph explorer</span></div>
+  <div class="brand">🔭 <b>SPARQL Registry Viewer</b><span class="ver">read-only graph explorer</span></div>
   <select id="connSelect" title="connection" aria-label="connection"></select>
   <button id="connEdit" type="button" title="manage connections" aria-label="manage connections">⚙</button>
   <span id="connStatus" class="muted"></span>
@@ -56,6 +56,9 @@
     </div>
     <div id="errBar" class="hidden" role="alert"></div>
   </div>
+  <div id="panelGrip" role="separator" aria-orientation="vertical" tabindex="0"
+       aria-label="resize details panel" title="drag to resize — double-click to reset"
+       aria-valuemin="260" aria-valuemax="1000" aria-valuenow="360"></div>
   <aside id="panel" class="hidden"></aside>
 </main>
 
@@ -69,7 +72,7 @@
     <label>Mode
       <select id="cMode">
         <option value="direct">direct — browser queries the endpoint (needs CORS)</option>
-        <option value="proxy">via Scope proxy — for endpoints without CORS or internal hostnames</option>
+        <option value="proxy">via the built-in proxy — for endpoints without CORS or internal hostnames</option>
       </select>
     </label>
     <label>Label language preference <input id="cLang" placeholder="en, or ar,en"></label>

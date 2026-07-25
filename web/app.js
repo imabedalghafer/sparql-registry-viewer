@@ -1,4 +1,4 @@
-/* SPARQL Scope — read-only graph explorer for any SPARQL 1.1 endpoint.
+/* SPARQL Registry Viewer — read-only graph explorer for any SPARQL 1.1 endpoint.
  * Copyright 2026 Ibrahim Abedalghafer. SPDX-License-Identifier: Apache-2.0
  *
  * Data from an endpoint is untrusted: it reaches the DOM only via textContent,
@@ -77,7 +77,7 @@ function setConn(c) {
       if (typeof v === "string" && k !== "__proto__") prefixes[k] = v;
   $("connStatus").textContent = `${c.endpoint} · ${c.mode === "proxy" ? "via proxy" : "direct"}`;
   $("connStatus").title = c.mode === "proxy"
-    ? "Queries go through the Scope server (works for endpoints without CORS)"
+    ? "Queries go through the viewer's server (works for endpoints without CORS)"
     : "Your browser queries the endpoint directly";
 
   const ph = (label) => { const o = el("option", null, label); o.value = ""; return o; };
@@ -140,7 +140,7 @@ async function sparqlTriples(query, opts) {
     throw new Error("endpoint returned HTML, not RDF — is this really a SPARQL endpoint?");
   const parsed = R.parseNTriples(body);
   if (!parsed.triples.length && /turtle|rdf\+xml|json/i.test(ctype) && body.trim())
-    throw new Error(`endpoint ignored our Accept header and returned ${ctype}; Scope v0.1 parses N-Triples only`);
+    throw new Error(`endpoint ignored our Accept header and returned ${ctype}; SPARQL Registry Viewer v0.1 parses N-Triples only`);
   return parsed;
 }
 
@@ -562,12 +562,12 @@ async function run() {
   const status = $("runStatus");
   if (!R.READ_FORMS.has(form)) {
     showError(form === "UNKNOWN"
-      ? "Could not recognise this as a SPARQL query. Scope only runs SELECT, CONSTRUCT, ASK and DESCRIBE."
-      : `SPARQL Scope is read-only — it will not send a ${form} request.`);
+      ? "Could not recognise this as a SPARQL query. The viewer only runs SELECT, CONSTRUCT, ASK and DESCRIBE."
+      : `SPARQL Registry Viewer is read-only — it will not send a ${form} request.`);
     return;
   }
   if (R.usesFederation(q)) {
-    showError("This query uses SPARQL federation (SERVICE). Scope refuses it by default: SERVICE makes the "
+    showError("This query uses SPARQL federation (SERVICE). The viewer refuses it by default: SERVICE makes the "
       + "endpoint fetch a URL chosen by the query, which the proxy's allowlist cannot police. "
       + "An operator can enable it with SCOPE_ALLOW_SERVICE=1.");
     return;
@@ -678,12 +678,12 @@ function initEditor() {
   try {
     // Every upstream default that could reach the network is disabled:
     // YASQE ships its own Ctrl/Cmd-Enter that POSTs to dbpedia.org, and its
-    // prefix autocompleter fetches prefix.cc on load. Scope owns query
+    // prefix autocompleter fetches prefix.cc on load. The viewer owns query
     // execution, and must work on an offline LAN.
     const y = new Yasqe($("yasqe"), {
       showQueryButton: false, resizeable: true, persistenceId: null,
       autocompleters: [],
-      queryingDisabled: "SPARQL Scope runs the query itself",
+      queryingDisabled: "SPARQL Registry Viewer runs the query itself",
       requestConfig: { endpoint: "" },
       extraKeys: { "Ctrl-Enter": null, "Cmd-Enter": null, "Ctrl-S": null },
     });
@@ -727,6 +727,52 @@ $("btnTheme").onclick = () => applyTheme(isDark() ? "light" : "dark");
 document.addEventListener("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); run(); }
 });
+
+/* ---------------------------------------------------------- panel resize */
+{
+  const grip = $("panelGrip");
+  const PANEL_MIN = 260; // keep in step with #panel min/max-width in style.css
+  const setPanelWidth = (w) => {
+    const max = Math.max(PANEL_MIN, Math.round(innerWidth * 0.7));
+    const px = Math.min(Math.max(Math.round(w), PANEL_MIN), max);
+    document.documentElement.style.setProperty("--panel-w", px + "px");
+    grip.setAttribute("aria-valuemax", String(max));
+    grip.setAttribute("aria-valuenow", String(px));
+    return px;
+  };
+  const savePanelWidth = (px) => {
+    try { localStorage.setItem("scopePanelW", String(px)); } catch { /* ignore */ }
+  };
+  // The panel sits at the inline end, so dragging the divider left widens it.
+  grip.onpointerdown = (e) => {
+    if (e.button > 0) return;
+    e.preventDefault();
+    grip.setPointerCapture(e.pointerId);
+    const startX = e.clientX;
+    let px = $("panel").getBoundingClientRect().width;
+    const startW = px;
+    grip.onpointermove = (ev) => { px = setPanelWidth(startW + (startX - ev.clientX)); };
+    grip.onpointerup = grip.onpointercancel = () => {
+      grip.onpointermove = grip.onpointerup = grip.onpointercancel = null;
+      savePanelWidth(px);
+    };
+  };
+  grip.onkeydown = (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    const cur = $("panel").getBoundingClientRect().width;
+    savePanelWidth(setPanelWidth(cur + (e.key === "ArrowLeft" ? 24 : -24)));
+  };
+  grip.ondblclick = () => {
+    document.documentElement.style.removeProperty("--panel-w");
+    grip.setAttribute("aria-valuenow", "360");
+    try { localStorage.removeItem("scopePanelW"); } catch { /* ignore */ }
+  };
+  try {
+    const saved = parseInt(localStorage.getItem("scopePanelW") || "", 10);
+    if (Number.isInteger(saved)) setPanelWidth(saved);
+  } catch { /* ignore */ }
+}
 
 initEditor();
 loadConfig();

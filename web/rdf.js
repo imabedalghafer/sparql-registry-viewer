@@ -1,4 +1,4 @@
-/* SPARQL Scope — RDF/SPARQL core.
+/* SPARQL Registry Viewer — RDF/SPARQL core.
  *
  * Pure, dependency-free, and unit-tested (test/rdf.test.mjs). Kept separate
  * from app.js precisely because these are the parts where "silently wrong" is

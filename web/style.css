@@ -1,4 +1,4 @@
-/* SPARQL Scope — Copyright 2026 Ibrahim Abedalghafer.
+/* SPARQL Registry Viewer — Copyright 2026 Ibrahim Abedalghafer.
  * SPDX-License-Identifier: Apache-2.0
  *
  * Brand-neutral by design: re-theming is editing the custom properties below.
@@ -87,8 +87,15 @@ th { position: sticky; top: 0; background: var(--surface); color: var(--ink-2); 
        text-align: start; text-decoration: underline dotted; cursor: pointer; }
 .iri:hover { text-decoration: underline; }
 
-#panel { width: 360px; overflow-y: auto; background: var(--surface);
+#panel { width: var(--panel-w, 360px); min-width: 260px; max-width: 70vw;
+         overflow-y: auto; background: var(--surface);
          border-inline-start: 1px solid var(--grid); padding: 14px; font-size: 13px; }
+#panelGrip { flex: 0 0 6px; cursor: col-resize; touch-action: none; background: var(--surface); }
+#panelGrip:hover, #panelGrip:active,
+#panelGrip:focus-visible { background: color-mix(in srgb, var(--accent) 45%, var(--surface)); }
+#panelGrip:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+/* The grip hides with the panel; :has keeps that in CSS so no JS call site can forget it. */
+#panelGrip:has(+ #panel.hidden) { display: none; }
 #panel h2 { margin: 0 0 2px; font-size: 15px; unicode-bidi: plaintext; }
 #panel .iri { font: 11px ui-monospace, monospace; color: var(--muted);
               text-decoration: none; cursor: default; display: block; overflow-wrap: anywhere; }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SPARQL Scope server — static app + read-only SPARQL proxy.
+"""SPARQL Registry Viewer server — static app + read-only SPARQL proxy.
 
 Stdlib only. Serves the web app and forwards SPARQL *queries* (never updates)
 to endpoints the browser cannot reach directly: no CORS headers, a
@@ -11,7 +11,7 @@ Env:
                       (default: web/config.default.json)
     SCOPE_ALLOW       comma-separated host[:port] values; when set, only these
                       hosts may be proxied. STRONGLY recommended whenever
-                      Scope is reachable by anyone you do not trust — an open
+                      the viewer is reachable by anyone you do not trust — an open
                       proxy can be aimed at internal services.
     SCOPE_AUTH_<NAME> "user:pass" sent as basic auth when the proxied
                       endpoint's HOST matches <NAME> (see auth_matches).
@@ -128,7 +128,7 @@ def uses_federation(q: str) -> bool:
 
     A read-only query is still executed BY the endpoint: SERVICE makes the
     trusted store fetch a URL the query author chose, so SCOPE_ALLOW — which
-    only vets the endpoint Scope talks to — cannot contain it. Refused unless
+    only vets the endpoint the viewer talks to — cannot contain it. Refused unless
     SCOPE_ALLOW_SERVICE is set. Variables (?service) and prefixed names
     (ex:service) are not the keyword.
     """
@@ -193,7 +193,7 @@ OPENER = urllib.request.build_opener(NoRedirect)
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = f"sparql-scope/{VERSION}"
+    server_version = f"sparql-registry-viewer/{VERSION}"
     protocol_version = "HTTP/1.1"
 
     def log_message(self, fmt, *args):
@@ -265,7 +265,7 @@ class Handler(BaseHTTPRequestHandler):
         fwd.add_header("Accept", accept)
         # Wikidata and other public endpoints require a descriptive UA.
         fwd.add_header("User-Agent", os.environ.get(
-            "SCOPE_USER_AGENT", f"SPARQL-Scope/{VERSION} (read-only graph explorer)"))
+            "SCOPE_USER_AGENT", f"SPARQL-Registry-Viewer/{VERSION} (read-only graph explorer)"))
         for name, cred in os.environ.items():
             if name.startswith("SCOPE_AUTH_") and auth_matches(name[len("SCOPE_AUTH_"):], endpoint):
                 fwd.add_header("Authorization",
@@ -285,7 +285,7 @@ class Handler(BaseHTTPRequestHandler):
             detail = e.read(20000)
             if e.code in (301, 302, 303, 307, 308):
                 loc = e.headers.get("Location", "?")
-                return self._err(502, f"endpoint redirected to {loc} — Scope does not follow "
+                return self._err(502, f"endpoint redirected to {loc} — the viewer does not follow "
                                       "redirects (it would drop the query and could bypass "
                                       "SCOPE_ALLOW). Configure the final URL instead.")
             self._send(e.code, detail or str(e).encode(), "text/plain; charset=utf-8")
@@ -294,6 +294,6 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    print(f"sparql-scope {VERSION} on :{PORT} (config: {CONFIG}"
+    print(f"sparql-registry-viewer {VERSION} on :{PORT} (config: {CONFIG}"
           f"{', SCOPE_ALLOW=' + ','.join(ALLOW) if ALLOW else ', proxy OPEN — set SCOPE_ALLOW if untrusted users can reach this'})")
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()

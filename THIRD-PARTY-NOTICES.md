@@ -1,6 +1,6 @@
 # Third-party notices
 
-SPARQL Scope is Apache-2.0. It **redistributes** the following components as
+SPARQL Registry Viewer is Apache-2.0. It **redistributes** the following components as
 pre-built bundles under `web/vendor/`, each under the MIT License, which
 requires that the copyright and permission notice below travel with them.
 
@@ -39,7 +39,7 @@ Copyright holders, as stated by each project:
 ## Why the libraries are vendored
 
 They are committed to this repository rather than installed at runtime so that
-the container has **no CDN dependency**: Scope is meant to run on isolated and
+the container has **no CDN dependency**: the viewer is meant to run on isolated and
 offline LANs, where a runtime fetch would hang rather than fail fast. Updating
 a library means replacing the file under `web/vendor/` and updating the version
 in this file.

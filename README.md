@@ -1,4 +1,4 @@
-# 🔭 SPARQL Scope
+# 🔭 SPARQL Registry Viewer
 
 **A read-only graph explorer for any SPARQL 1.1 endpoint** — the "graph browser"
 experience for RDF: run a query, see a graph, click a node for its metadata,
@@ -45,9 +45,9 @@ the image is built locally:
 
 ```yaml
 services:
-  sparql-scope:
+  sparql-registry-viewer:
     build: .                 # or: build: https://github.com/imabedalghafer/sparql-registry-viewer.git
-    image: sparql-scope:0.1.0
+    image: sparql-registry-viewer:0.1.0
     ports: ["8080:8080"]
     volumes: ["./my-config.json:/config/config.json:ro"]
     environment:
@@ -80,7 +80,7 @@ Users can also add connections in the UI; those are stored in the browser.
 |---|---|
 | `SCOPE_PORT` | listen port (default 8080) |
 | `SCOPE_CONFIG` | path of the config JSON served to the app |
-| `SCOPE_ALLOW` | comma-separated `host` or `host:port` values the proxy may query. **Set this whenever untrusted users can reach Scope** — see [SECURITY.md](SECURITY.md) |
+| `SCOPE_ALLOW` | comma-separated `host` or `host:port` values the proxy may query. **Set this whenever untrusted users can reach the viewer** — see [SECURITY.md](SECURITY.md) |
 | `SCOPE_AUTH_<NAME>` | `user:pass` sent as basic auth when the endpoint's *host* matches `<NAME>`; credentials never reach the browser |
 | `SCOPE_MAX_BYTES` | cap on a proxied response (default 25 MB) |
 | `SCOPE_TIMEOUT` | upstream timeout in seconds (default 90) |
@@ -96,7 +96,7 @@ Verified against Fuseki, Wikidata, DBpedia, UniProt and QLever. Honest caveats:
   produces an explicit error rather than an empty canvas.
 - **Redirects are not followed.** A redirected POST would silently become a
   body-less GET (losing the query) and could reach a host `SCOPE_ALLOW` never
-  approved. Scope reports the `Location` so you can configure the final URL —
+  approved. The viewer reports the `Location` so you can configure the final URL —
   e.g. use `https://dbpedia.org/sparql`, not `http://`.
 - **`GRAPH ?g` is not universal.** The "graphs" button returns nothing on stores
   that do not expose named graphs (Wikidata among them). When a connection pins

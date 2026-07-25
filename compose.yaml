@@ -4,9 +4,9 @@
 #   volumes: [./my-config.json:/config/config.json:ro]
 #   environment: [SCOPE_CONFIG=/config/config.json]
 services:
-  sparql-scope:
+  sparql-registry-viewer:
     build: .
-    image: sparql-scope:0.1.0
+    image: sparql-registry-viewer:0.1.0
     ports:
       - "${SCOPE_PORT:-8080}:8080"
     restart: unless-stopped

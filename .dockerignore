@@ -1,0 +1,14 @@
+.git
+.gitignore
+.dockerignore
+test/
+compose.yaml
+**/__pycache__
+**/*.pyc
+.DS_Store
+# NOTE: LICENSE, THIRD-PARTY-NOTICES.md and README.md are deliberately NOT
+# excluded — the image redistributes MIT-licensed libraries under web/vendor/
+# and must carry their notices.
+CONTRIBUTING.md
+SECURITY.md
+CHANGELOG.md
