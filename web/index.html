@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPARQL Scope</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<!-- Restore the chosen theme before first paint so there is no flash. -->
+<script>try{var t=localStorage.getItem("scopeTheme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<link rel="stylesheet" href="vendor/yasqe.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">🔭 <b>SPARQL Scope</b><span class="ver">read-only graph explorer</span></div>
+  <select id="connSelect" title="connection" aria-label="connection"></select>
+  <button id="connEdit" type="button" title="manage connections" aria-label="manage connections">⚙</button>
+  <span id="connStatus" class="muted"></span>
+  <span class="spacer"></span>
+  <button id="btnGraphs" type="button" title="list the endpoint's named graphs">graphs</button>
+  <button id="btnTheme" type="button" title="switch light / dark" aria-label="switch light or dark theme">◐</button>
+</header>
+
+<section id="editorWrap">
+  <div id="yasqe"></div>
+  <div class="editorBar">
+    <button id="btnRun" type="button" class="primary" title="run (Ctrl+Enter)">▶ Run</button>
+    <select id="history" title="query history" aria-label="query history"></select>
+    <select id="samples" title="sample queries" aria-label="sample queries"></select>
+    <span id="runStatus" class="muted" role="status"></span>
+    <span class="spacer"></span>
+    <label class="muted" title="append LIMIT 200 to unbounded queries">
+      <input type="checkbox" id="limitGuard" checked> auto-LIMIT
+    </label>
+  </div>
+</section>
+
+<main>
+  <div id="stage">
+    <div id="cy"></div>
+    <div id="tableWrap" class="hidden">
+      <div id="tableMeta" class="muted"></div>
+      <div id="tableScroll"><table id="tbl"></table></div>
+    </div>
+    <div id="empty">
+      <p>Run a query. <code>CONSTRUCT</code> and <code>DESCRIBE</code> render as a graph;
+      <code>SELECT</code> renders as a table, with a graph view offered when the rows are triple-shaped.
+      Click a node for its metadata, double-click to expand its neighbourhood.</p>
+    </div>
+    <div id="graphBar" class="hidden">
+      <button id="btnToggleView" type="button" class="hidden">view as graph</button>
+      <button id="btnRelayout" type="button">re-layout</button>
+      <button id="btnFit" type="button">fit</button>
+      <button id="btnClear" type="button">clear</button>
+      <span id="graphMeta" class="muted"></span>
+    </div>
+    <div id="errBar" class="hidden" role="alert"></div>
+  </div>
+  <aside id="panel" class="hidden"></aside>
+</main>
+
+<dialog id="connDlg" aria-label="connections">
+  <h3>Connections</h3>
+  <div id="connList"></div>
+  <fieldset>
+    <legend>Add or edit</legend>
+    <label>Name <input id="cName"></label>
+    <label>Endpoint URL <input id="cUrl" placeholder="https://…/sparql"></label>
+    <label>Mode
+      <select id="cMode">
+        <option value="direct">direct — browser queries the endpoint (needs CORS)</option>
+        <option value="proxy">via Scope proxy — for endpoints without CORS or internal hostnames</option>
+      </select>
+    </label>
+    <label>Label language preference <input id="cLang" placeholder="en, or ar,en"></label>
+    <div id="cErr" class="error" role="alert"></div>
+    <div class="row">
+      <button id="cSave" type="button" class="primary">Save</button>
+      <button id="cClose" type="button">Close</button>
+    </div>
+  </fieldset>
+</dialog>
+
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/yasqe.min.js"></script>
+<script src="rdf.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

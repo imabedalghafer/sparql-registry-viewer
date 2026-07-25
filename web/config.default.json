@@ -1,0 +1,20 @@
+{
+  "connections": [
+    {
+      "name": "Wikidata",
+      "endpoint": "https://query.wikidata.org/sparql",
+      "mode": "direct",
+      "lang": "en",
+      "samples": [
+        {
+          "name": "cats (graph)",
+          "q": "PREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nCONSTRUCT { ?cat wdt:P31 wd:Q146 } WHERE { ?cat wdt:P31 wd:Q146 } LIMIT 30"
+        },
+        {
+          "name": "country borders (graph)",
+          "q": "PREFIX wdt: <http://www.wikidata.org/prop/direct/>\nPREFIX wd: <http://www.wikidata.org/entity/>\nCONSTRUCT { wd:Q810 wdt:P47 ?n } WHERE { wd:Q810 wdt:P47 ?n }"
+        }
+      ]
+    }
+  ]
+}

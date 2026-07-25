@@ -1,0 +1,12 @@
+# Standalone deployment example.
+#   docker compose up -d          → http://localhost:8080
+# Mount your own config to preload connections (see README):
+#   volumes: [./my-config.json:/config/config.json:ro]
+#   environment: [SCOPE_CONFIG=/config/config.json]
+services:
+  sparql-scope:
+    build: .
+    image: sparql-scope:0.1.0
+    ports:
+      - "${SCOPE_PORT:-8080}:8080"
+    restart: unless-stopped
